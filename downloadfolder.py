@@ -3,11 +3,28 @@
 import os
 import glob
 import pdb
+import configparser
 
-DOWNLOADPATH = 'D:\Downloads\\'; #
-os.chdir(DOWNLOADPATH)
-li = os.listdir(DOWNLOADPATH);
+DOWNLOADPATH = ''
+li=''
 
+
+def loadConfig():
+    """Load config file with path"""
+    config = configparser.ConfigParser();
+    config.sections();
+    config.read('config.ini');
+
+    try:
+        DOWNLOADPATH = config['common']['DOWNLOADPATH']
+    except (KeyError):
+        print ("--Error: Couldn't read path. Corrupt ini file?");
+
+    os.chdir(DOWNLOADPATH)
+    li = os.listdir(DOWNLOADPATH);
+    print(li)
+        
+        
 def toptensize():
     """Show a list of top ten biggest files"""
     pass;
@@ -58,7 +75,6 @@ def listAllFileSizes():
 
 def listFiles():
     """List files"""
-
     x = "";
     for x in li:
         print(x);
@@ -80,8 +96,9 @@ def bConv(byte,mode=None):
     return
 
 
-#listFiles();
+listFiles();
 #listAllFileSizes();
-print (numOfFiles());
+#print (numOfFiles());
+print (loadConfig());
 menu();
 input("press any key");
