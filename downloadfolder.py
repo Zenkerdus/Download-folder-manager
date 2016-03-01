@@ -4,26 +4,26 @@ import os
 import glob
 import pdb
 import configparser
+import sys
 
-DOWNLOADPATH = ''
-li=''
-
-
-def loadConfig():
+def loadConfig(file):
     """Load config file with path"""
     config = configparser.ConfigParser();
     config.sections();
-    config.read('config.ini');
+    config.read(file);
 
     try:
-        DOWNLOADPATH = config['common']['DOWNLOADPATH']
+        downloadpath = config['common']['DOWNLOADPATH']
     except (KeyError):
         print ("--Error: Couldn't read path. Corrupt ini file?");
+        return False
 
-    os.chdir(DOWNLOADPATH)
-    li = os.listdir(DOWNLOADPATH);
-    print(li)
-        
+    try:
+        os.chdir(downloadpath)
+    except (FileNotFoundError):
+        print("--Error: Path not found! Did you type it correctly in the config file?")
+        return False;
+    return True;
         
 def toptensize():
     """Show a list of top ten biggest files"""
@@ -49,7 +49,7 @@ def removeTorrentFiles():
             print(file);
     return
 
-def listAllFileSizes():
+def listFileSizes():
     """Displays sizes of files"""
 
     x = 0;
@@ -73,11 +73,14 @@ def listAllFileSizes():
     return
     
 
-def listFiles():
+def listFiles(li):
     """List files"""
+    print ("  ---Filelist---");
+    
     x = "";
     for x in li:
         print(x);
+    print ("  --------------");
     return
 
 def bConv(byte,mode=None):
@@ -96,9 +99,11 @@ def bConv(byte,mode=None):
     return
 
 
-listFiles();
-#listAllFileSizes();
-#print (numOfFiles());
-print (loadConfig());
+
+DOWNLOADPATH = loadConfig('config.ini');
+if (DOWNLOADPATH == False):
+    print ("--Quitting...")
+    sys.exit()
+
 menu();
-input("press any key");
+
