@@ -2,7 +2,7 @@
 
 import os
 import glob
-import pdb
+import pdb #pdb.set_trace()
 import configparser
 import sys
 
@@ -34,13 +34,38 @@ def numOfFiles():
     return len(li);
 
 def menu():
-    print ("What do you want to do?");
-    print ("1.Erase dumb files");
-    print ("2.Group Anime Files");
-    print ("3.Remove Torrent files");
-    return;
+    c = None
+    while(c == None):
+        print ("What do you want to do?");
+        print ("1.Show files");
+        print ("2.Erase dumb files");
+        print ("3.Group Anime Files");
+        print ("4.Remove Torrent files");
+        try:
+            c = int(input("Choice> "));
+        except (ValueError):
+            print ("");
+            print ("-- Invalid choice!");
+            print ("");
+            continue
+        if (c < 0) or (c > 10):
+            print ("");
+            print ("-- Invalid choice!");
+            print ("");
+            c = None
+            continue
 
-
+        elif (c == 1):
+            return 1
+        elif (c == 2):
+            return 2
+        elif (c == 3):
+            return 3
+        elif (c == 4):
+            return 4
+        elif (c == 5):
+            return 5
+    print(c)
 
 def removeTorrentFiles():
     for file in li:
@@ -73,10 +98,10 @@ def listFileSizes():
     return
     
 
-def listFiles(li):
+def listFiles():
     """List files"""
     print ("  ---Filelist---");
-    
+    li = os.listdir()
     x = "";
     for x in li:
         print(x);
@@ -98,12 +123,27 @@ def bConv(byte,mode=None):
         print("Error");
     return
 
+def main():
+    DOWNLOADPATH = loadConfig('config.ini');
+    if (DOWNLOADPATH == False):
+        print ("--Quitting...")
+        sys.exit()
+    c = menu();
+    #Choices
+    if (c == 1):
+        listFiles();
+    elif (c == 2):
+        print ("NOT IMPLEMENTED");
+    elif (c == 3):
+        print ("NOT IMPLEMENTED");
+    elif (c == 4):
+        print ("NOT IMPLEMENTED");
+    elif (c == 5):
+        print ("NOT IMPLEMENTED");
+
+if __name__ == "__main__":
+    main()
 
 
-DOWNLOADPATH = loadConfig('config.ini');
-if (DOWNLOADPATH == False):
-    print ("--Quitting...")
-    sys.exit()
 
-menu();
 
