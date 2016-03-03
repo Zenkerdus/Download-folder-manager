@@ -31,7 +31,8 @@ def toptensize():
 
 def numOfFiles():
     """Returns number of files"""
-    return len(li);
+    pass
+    #return len(li);
 
 def menu():
     c = None
@@ -40,7 +41,10 @@ def menu():
         print ("1.Show files");
         print ("2.Erase dumb files");
         print ("3.Group Anime Files");
-        print ("4.Remove Torrent files");
+        print ("4.Remove .torrent files");
+        print ("5.Catalogue all files in folders");
+        print ("0.Quit");
+        print ("")
         try:
             c = int(input("Choice> "));
         except (ValueError):
@@ -65,13 +69,17 @@ def menu():
             return 4
         elif (c == 5):
             return 5
+        elif (c == 0):
+            return 0
     print(c)
 
 def removeTorrentFiles():
+    li = os.listdir()
     for file in li:
         if file.endswith(".torrent"):
             os.remove(file);
             print(file);
+    print("Done")
     return
 
 def listFileSizes():
@@ -123,23 +131,38 @@ def bConv(byte,mode=None):
         print("Error");
     return
 
+def detectFileTypes():
+    """Return how many different filetypes in folder in list"""
+    li = os.listdir();
+    for file in li:
+        if file.endswith("*.*"):
+            print(file);
+
+def sortZipFiles():
+    """move files to zip folder"""
+
 def main():
     DOWNLOADPATH = loadConfig('config.ini');
+
     if (DOWNLOADPATH == False):
         print ("--Quitting...")
         sys.exit()
-    c = menu();
-    #Choices
-    if (c == 1):
-        listFiles();
-    elif (c == 2):
-        print ("NOT IMPLEMENTED");
-    elif (c == 3):
-        print ("NOT IMPLEMENTED");
-    elif (c == 4):
-        print ("NOT IMPLEMENTED");
-    elif (c == 5):
-        print ("NOT IMPLEMENTED");
+
+    while (True):
+        c = menu();
+        #Choices
+        if (c == 1): #show
+            listFiles();
+        elif (c == 2): #erase dumb files
+            print ("NOT IMPLEMENTED");
+        elif (c == 3): #anime folder, move anime files
+            print ("NOT IMPLEMENTED");
+        elif (c == 4): #remove torrent files
+            removeTorrentFiles();
+        elif (c == 5): 
+            print ("NOT IMPLEMENTED");
+        elif (c == 0): #quit
+            sys.exit();
 
 if __name__ == "__main__":
     main()
