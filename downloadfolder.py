@@ -131,12 +131,32 @@ def bConv(byte,mode=None):
         print("Error");
     return
 
+def makeDirs():
+    extensions = ["rar","zip","mkv","mp3", "7z", "jpg", "png", "odt", "exe", "pdf"];
+    path="sortedDownloads"
+    os.mkdir(path)
+    os.chdir(path)
+    for e in extensions:
+        os.mkdir(e);
+    os.chdir(os.pardir)
+        
+
+
 def detectFileTypes():
-    """Return how many different filetypes in folder in list"""
+    """Return how many known filetypes in folder in list"""
+    """extensions = ["rar","zip","mkv","mp3", "7z", "jpg", "png", "odt", "exe", "pdf"]
     li = os.listdir();
+    found=[];
     for file in li:
-        if file.endswith("*.*"):
-            print(file);
+        for t in extensions:
+            if file.endswith("."+t):
+                found.append(t);
+                extensions.pop(extensions.index(t));
+                li.pop(li.index(file));
+    print (found);
+    print (extensions)
+    print (li);"""
+    pass
 
 def sortZipFiles():
     """move files to zip folder"""
@@ -166,6 +186,10 @@ def main():
 
 if __name__ == "__main__":
     main()
+    #DEBUG
+    #DOWNLOADPATH = loadConfig('config.ini');
+    #makeDirs();
+    
 
 
 
