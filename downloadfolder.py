@@ -14,12 +14,16 @@ def loadConfig(file):
 
     try:
         downloadpath = config['common']['DOWNLOADPATH']
-    except (KeyError):
+    except KeyError as e:
         print ("--Error: Couldn't read path. Corrupt ini file?");
+        print ("--E:",end="")
+        print (e);
         return False
 
     try:
         os.chdir(downloadpath)
+        print (downloadpath)
+        print (os.curdir)
     except (FileNotFoundError):
         print("--Error: Path not found! Did you type it correctly in the config file?")
         return False;
@@ -131,11 +135,14 @@ def bConv(byte,mode=None):
         print("Error");
     return
 
-def makeDirs():
+def makeDirs(d):
     extensions = ["rar","zip","mkv","mp3", "7z", "jpg", "png", "odt", "exe", "pdf"];
-    path="sortedDownloads"
-    os.mkdir(path)
-    os.chdir(path)
+    path="sortedDownloads/"
+    try:
+        os.mkdir(path)
+    except FileExistsError as e:
+        print ("Folder exists, skipping");
+    #os.chdir(path)
     for e in extensions:
         os.mkdir(e);
     os.chdir(os.pardir)
@@ -185,10 +192,10 @@ def main():
             sys.exit();
 
 if __name__ == "__main__":
-    main()
+    #main()
     #DEBUG
-    #DOWNLOADPATH = loadConfig('config.ini');
-    #makeDirs();
+    DOWNLOADPATH = loadConfig('config.ini');
+    makeDirs(DOWNLOADPATH);
     
 
 
