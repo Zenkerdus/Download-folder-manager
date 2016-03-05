@@ -43,10 +43,10 @@ def menu():
     while(c == None):
         print ("What do you want to do?");
         print ("1.Show files");
-        print ("2.Erase dumb files");
-        print ("3.Group Anime Files");
+        print ("2.Move files");
+        print ("3.Create folders");
         print ("4.Remove .torrent files");
-        print ("5.Catalogue all files in folders");
+        print ("");
         print ("0.Quit");
         print ("")
         try:
@@ -135,17 +135,24 @@ def bConv(byte,mode=None):
         print("Error");
     return
 
-def makeDirs(d):
+def makeDirs():
+    """Creates dir 'sortedfolder' and filetype folders"""
     extensions = ["rar","zip","mkv","mp3", "7z", "jpg", "png", "odt", "exe", "pdf"];
     path="sortedDownloads/"
     try:
         os.mkdir(path)
-    except FileExistsError as e:
-        print ("Folder exists, skipping");
-    #os.chdir(path)
+    except FileExistsError as err:
+        print ("Skipping folder ", end="");
+        print (path)
+    os.chdir(path)
     for e in extensions:
-        os.mkdir(e);
+        try:
+            os.mkdir(e);
+        except FileExistsError as err:
+            print ("Skipping folder ", end="")
+            print (e)
     os.chdir(os.pardir)
+
         
 
 
@@ -165,6 +172,25 @@ def detectFileTypes():
     print (li);"""
     pass
 
+def moveFiles():
+    """Move downloaded files to folders"""
+    extensions = ["rar","zip","mkv","mp3", "7z", "jpg", "png", "odt", "exe", "pdf"];
+    path="sortedDownloads/"
+    li = os.listdir()
+    for file in li:
+        for e in extensions:
+            if file.endswith(e):
+                try:
+                    os.rename(file,path+e+"\\"+file)
+                except FileNotFoundError:
+                    print("--Error: Have you created folders first? Choose 3 in menu");
+                    return 1
+                    
+                print("Moved ", end="")
+                print(file, end="")
+                print(" to ", end="")
+                print(file,path+e+"\\"+file)
+
 def sortZipFiles():
     """move files to zip folder"""
 
@@ -180,10 +206,10 @@ def main():
         #Choices
         if (c == 1): #show
             listFiles();
-        elif (c == 2): #erase dumb files
-            print ("NOT IMPLEMENTED");
-        elif (c == 3): #anime folder, move anime files
-            print ("NOT IMPLEMENTED");
+        elif (c == 2): #move
+            moveFiles();
+        elif (c == 3): #create folders
+            makeDirs();
         elif (c == 4): #remove torrent files
             removeTorrentFiles();
         elif (c == 5): 
@@ -192,11 +218,11 @@ def main():
             sys.exit();
 
 if __name__ == "__main__":
-    #main()
+    main()
     #DEBUG
-    DOWNLOADPATH = loadConfig('config.ini');
-    makeDirs(DOWNLOADPATH);
-    
+    #DOWNLOADPATH = loadConfig('config.ini');
+    #makeDirs();
+    #moveFiles()
 
 
 
