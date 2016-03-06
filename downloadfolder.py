@@ -47,10 +47,16 @@ def menu():
         print ("3.Create folders");
         print ("4.Remove .torrent files");
         print ("");
-        print ("0.Quit");
+        print ("Q/0 - Quit");
         print ("")
+        c = input("Choice> ");
+
+        #Quit if Q
+        c = c.upper()
+        if (c == "Q" or c == "QUIT" or c == "EXIT"):
+            return 0
         try:
-            c = int(input("Choice> "));
+            c = int(c);
         except (ValueError):
             print ("");
             print ("-- Invalid choice!");
