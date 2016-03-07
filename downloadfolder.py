@@ -6,6 +6,16 @@ import pdb #pdb.set_trace()
 import configparser
 import sys
 
+EXTENSIONS = ["rar","zip","mkv","mp3", "7z", "jpg", "png", "odt", "exe", "pdf"];
+
+
+def startMessage():
+    print ("----------------------------")
+    print ("-  Downloadfolder manager  -")
+    print ("----------------------------")
+    return
+
+
 def loadConfig(file):
     """Load config file with path"""
     config = configparser.ConfigParser();
@@ -22,8 +32,7 @@ def loadConfig(file):
 
     try:
         os.chdir(downloadpath)
-        print (downloadpath)
-        print (os.curdir)
+        print ("Downloadfolder: ", downloadpath, end="\n\n")
     except (FileNotFoundError):
         print("--Error: Path not found! Did you type it correctly in the config file?")
         return False;
@@ -119,11 +128,11 @@ def listFileSizes():
 def listFiles():
     """List files"""
     print ("  ---Filelist---");
+    print ("  --------------");
     li = os.listdir()
     x = "";
     for x in li:
         print(x);
-    print ("  --------------");
     return
 
 def bConv(byte,mode=None):
@@ -143,7 +152,7 @@ def bConv(byte,mode=None):
 
 def makeDirs():
     """Creates dir 'sortedfolder' and filetype folders"""
-    extensions = ["rar","zip","mkv","mp3", "7z", "jpg", "png", "odt", "exe", "pdf"];
+    global EXTENSIONS;
     path="sortedDownloads/"
     try:
         os.mkdir(path)
@@ -151,12 +160,14 @@ def makeDirs():
         print ("Skipping folder ", end="");
         print (path)
     os.chdir(path)
-    for e in extensions:
+    for e in EXTENSIONS:
         try:
             os.mkdir(e);
         except FileExistsError as err:
             print ("Skipping folder ", end="")
             print (e)
+        else:
+            print (e, " created");
     os.chdir(os.pardir)
 
         
@@ -171,7 +182,6 @@ def detectFileTypes():
         for t in extensions:
             if file.endswith("."+t):
                 found.append(t);
-                extensions.pop(extensions.index(t));
                 li.pop(li.index(file));
     print (found);
     print (extensions)
@@ -180,11 +190,11 @@ def detectFileTypes():
 
 def moveFiles():
     """Move downloaded files to folders"""
-    extensions = ["rar","zip","mkv","mp3", "7z", "jpg", "png", "odt", "exe", "pdf"];
+    global EXTENSIONS
     path="sortedDownloads/"
     li = os.listdir()
     for file in li:
-        for e in extensions:
+        for e in EXTENSIONS:
             if file.endswith(e):
                 try:
                     os.rename(file,path+e+"\\"+file)
@@ -201,6 +211,7 @@ def sortZipFiles():
     """move files to zip folder"""
 
 def main():
+    startMessage()
     DOWNLOADPATH = loadConfig('config.ini');
 
     if (DOWNLOADPATH == False):
@@ -210,6 +221,7 @@ def main():
     while (True):
         c = menu();
         #Choices
+        print ("  --------------");
         if (c == 1): #show
             listFiles();
         elif (c == 2): #move
@@ -222,6 +234,7 @@ def main():
             print ("NOT IMPLEMENTED");
         elif (c == 0): #quit
             sys.exit();
+        print ("  --------------");
 
 if __name__ == "__main__":
     main()
