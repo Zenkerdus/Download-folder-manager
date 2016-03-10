@@ -4,6 +4,7 @@
 
 #TODO:
 #Correct backslashes on paths!
+#detect extensions and create folders
 
 import os
 import glob
@@ -11,8 +12,10 @@ import pdb #pdb.set_trace()
 import configparser
 import sys
 
-EXTENSIONS = ["rar","zip","mkv","mp3", "7z", "jpg", "png", "odt", "exe", "pdf", "nds", "msi"];
-PATH = "sortedDownloads/"
+EXTENSIONS = ['7z', 'apk', 'docx', 'epub', 'exe', 'gba', 'jar', 'jpg', 'mkv',
+              'mp3', 'mp4', 'msi', 'nds', 'odt', 'pdf', 'png', 'rar', 'stl',
+              'txt', 'wav', 'zip']
+PATH = "#sortedDownloads/"
 
 
 
@@ -164,15 +167,13 @@ def makeDirs():
     try:
         os.mkdir(PATH)
     except FileExistsError as err:
-        print ("Skipping folder ", end="");
-        print (PATH)
+        print (PATH + " exists");
     os.chdir(PATH)
     for e in EXTENSIONS:
         try:
             os.mkdir(e);
         except FileExistsError as err:
-            print ("Skipping folder ", end="")
-            print (e)
+            print (e + " exists")
         else:
             print (e, " created");
     os.chdir(os.pardir)
@@ -203,13 +204,31 @@ def moveFiles():
     counter = 0;
     for file in li:
         for e in EXTENSIONS:
+
+            #if e == "images"
+            #for img in IMAGEFORMATS 
+
+            
             if file.endswith(e):
                 try:
                     os.rename(file,PATH+e+"\\"+file)
-                except FileNotFoundError as e:
+                except FileNotFoundError as err:
                     print("--Error: Have you created folders first? Choose 3 in menu");
-                    print("--Message: ",e);
+                    print("--Message: ",err);
                     return 1
+                except FileExistsError as err:
+                    print("--Error: File already exists!")
+                    print("--Message: ",err)
+                    c = ""
+                    c = input("Remove? (Y/N)")
+                    c = c.upper()
+                    if (c == "Y" or c == "YES"):
+                        os.remove(file)
+                        print("Removed ", file)
+                    elif ( c == "N" or c == "NO"):
+                        continue
+                    
+
                     
                 print("Moved ", end="")
                 print(file, end="")
