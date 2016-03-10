@@ -1,4 +1,9 @@
-"""Download folder manager"""
+"""Download folder manager
+   By Zenkerdus    
+"""
+
+#TODO:
+#Correct backslashes on paths!
 
 import os
 import glob
@@ -6,7 +11,9 @@ import pdb #pdb.set_trace()
 import configparser
 import sys
 
-EXTENSIONS = ["rar","zip","mkv","mp3", "7z", "jpg", "png", "odt", "exe", "pdf"];
+EXTENSIONS = ["rar","zip","mkv","mp3", "7z", "jpg", "png", "odt", "exe", "pdf", "nds", "msi"];
+PATH = "sortedDownloads/"
+
 
 
 def startMessage():
@@ -55,7 +62,7 @@ def menu():
         print ("2.Move files");
         print ("3.Create folders");
         print ("4.Remove .torrent files");
-        print ("");
+        print ("5.DEBUG-Move files back");
         print ("Q/0 - Quit");
         print ("")
         c = input("Choice> ");
@@ -153,13 +160,13 @@ def bConv(byte,mode=None):
 def makeDirs():
     """Creates dir 'sortedfolder' and filetype folders"""
     global EXTENSIONS;
-    path="sortedDownloads/"
+    global PATH;
     try:
-        os.mkdir(path)
+        os.mkdir(PATH)
     except FileExistsError as err:
         print ("Skipping folder ", end="");
-        print (path)
-    os.chdir(path)
+        print (PATH)
+    os.chdir(PATH)
     for e in EXTENSIONS:
         try:
             os.mkdir(e);
@@ -191,32 +198,63 @@ def detectFileTypes():
 def moveFiles():
     """Move downloaded files to folders"""
     global EXTENSIONS
-    path="sortedDownloads/"
+    global PATH;
     li = os.listdir()
+    counter = 0;
     for file in li:
         for e in EXTENSIONS:
             if file.endswith(e):
                 try:
-                    os.rename(file,path+e+"\\"+file)
-                except FileNotFoundError:
+                    os.rename(file,PATH+e+"\\"+file)
+                except FileNotFoundError as e:
                     print("--Error: Have you created folders first? Choose 3 in menu");
+                    print("--Message: ",e);
                     return 1
                     
                 print("Moved ", end="")
                 print(file, end="")
                 print(" to ", end="")
-                print(file,path+e+"\\"+file)
+                print(file,PATH+e+"\\"+file)
+                counter=counter+1
+    if (counter == 0):
+        print ("No valid files to sort");
+    else:
+        print ("Moved ",counter," files")
 
-def sortZipFiles():
-    """move files to zip folder"""
+def moveFilesBack():
+    """Move files back from folders, moveFiles in reverse"""
+    global EXTENSIONS
+    global PATH
+    li = os.listdir()
+    counter = 0
+    for e in EXTENSIONS:
+        li = os.listdir(PATH+"\\"+e);
+        print(li) #DEBUG
+        for file in li:
+            try:
+                os.rename(PATH+file,file);
+            except FileNotFoundError as e:
+                print("--Error:")
+                print("--Message: ",e);
+                return 1
+
+            print("Moved ", end="")
+            print(file, end="")
+            print(" to ", end="")
+            print(file,PATH+e+"\\"+file)
+            counter=counter+1
+        
+
+def quitting():
+    print ("Quitting...")
+    sys.exit()
 
 def main():
     startMessage()
     DOWNLOADPATH = loadConfig('config.ini');
 
     if (DOWNLOADPATH == False):
-        print ("--Quitting...")
-        sys.exit()
+        quitting();
 
     while (True):
         c = menu();
@@ -230,10 +268,10 @@ def main():
             makeDirs();
         elif (c == 4): #remove torrent files
             removeTorrentFiles();
-        elif (c == 5): 
-            print ("NOT IMPLEMENTED");
+        elif (c == 5): #DEBUG - move files back
+            moveFilesBack()
         elif (c == 0): #quit
-            sys.exit();
+            quitting()
         print ("  --------------");
 
 if __name__ == "__main__":
