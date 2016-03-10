@@ -5,6 +5,7 @@
 #TODO:
 #Correct backslashes on paths!
 #detect extensions and create folders
+#folder sorting
 
 #Test:
 #If file is PNG instead of png? Unneccessary?
@@ -15,15 +16,19 @@ import pdb #pdb.set_trace()
 import configparser
 import sys
 
+
 EXTENSIONS = ['7z', 'apk', 'docx', 'epub', 'exe', 'gba', 'jar', 'jpg', 'mkv',
               'mp3', 'mp4', 'msi', 'nds', 'odt', 'pdf', 'png', 'rar', 'stl',
               'txt', 'wav', 'zip']
 
-E_IMAGES = ["png", "jpg", "jpeg", "bmp"]
-E_DOCS = ["docx", "odt", "pdf", ]
-E_MUSIC = []
-E_VIDEOS = []
-E_COMPRESSED = []
+E_REMOVE = ["nsf","sfk","obj","html"]
+
+E_IMAGES = ["png", "jpg", "jpeg", "bmp","tif"]
+E_DOCS = ["docx", "odt", "pdf", "ods"]
+E_AUDIO = ["mp3", "wav"]
+E_VIDEOS = ["mp4","flv"]
+E_COMPRESSED = ["rar","7z","rar","zip"]
+E_SOFTWARE = ["apk","exe","nds","gba","msi"]
 
 
 PATH = "#sortedDownloads/"
@@ -75,7 +80,7 @@ def menu():
         print ("1.Show files");
         print ("2.Move files");
         print ("3.Create folders");
-        print ("4.Remove .torrent files");
+        print ("4.Remove junk files");
         print ("5.DEBUG-Move files back");
         print ("Q/0 - Quit");
         print ("")
@@ -113,12 +118,15 @@ def menu():
             return 0
     print(c)
 
-def removeTorrentFiles():
+def removeJunkFiles():
     li = os.listdir()
-    for file in li:
-        if file.endswith(".torrent"):
-            os.remove(file);
-            print(file);
+    global E_REMOVE
+    for e in E_REMOVE:
+        for file in li:
+            if file.endswith(e):
+                os.remove(file);
+                print(file);
+
     print("Done")
     return
 
@@ -188,9 +196,6 @@ def makeDirs():
         else:
             print (e, " created");
     os.chdir(os.pardir)
-
-        
-
 
 def detectFileTypes():
     """Return how many known filetypes in folder in list"""
@@ -296,8 +301,8 @@ def main():
             moveFiles();
         elif (c == 3): #create folders
             makeDirs();
-        elif (c == 4): #remove torrent files
-            removeTorrentFiles();
+        elif (c == 4): #remove junk files
+            removeJunkFiles();
         elif (c == 5): #DEBUG - move files back
             moveFilesBack()
         elif (c == 0): #quit
