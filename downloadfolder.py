@@ -6,6 +6,9 @@
 #Correct backslashes on paths!
 #detect extensions and create folders
 
+#Test:
+#If file is PNG instead of png? Unneccessary?
+
 import os
 import glob
 import pdb #pdb.set_trace()
@@ -15,6 +18,14 @@ import sys
 EXTENSIONS = ['7z', 'apk', 'docx', 'epub', 'exe', 'gba', 'jar', 'jpg', 'mkv',
               'mp3', 'mp4', 'msi', 'nds', 'odt', 'pdf', 'png', 'rar', 'stl',
               'txt', 'wav', 'zip']
+
+E_IMAGES = ["png", "jpg", "jpeg", "bmp"]
+E_DOCS = ["docx", "odt", "pdf", ]
+E_MUSIC = []
+E_VIDEOS = []
+E_COMPRESSED = []
+
+
 PATH = "#sortedDownloads/"
 
 
