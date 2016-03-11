@@ -3,7 +3,6 @@
 """
 
 #TODO:
-#Correct backslashes on paths!
 #detect extensions and create folders
 #folder sorting
 
@@ -58,7 +57,7 @@ def loadConfig(file):
 
     try:
         os.chdir(downloadpath)
-        print ("Downloadfolder: ", downloadpath, end="\n\n")
+        print ("Downloadfolder: ", downloadpath, end="/n/n")
     except (FileNotFoundError):
         print("--Error: Path not found! Did you type it correctly in the config file?")
         return False;
@@ -226,8 +225,9 @@ def moveFiles():
 
             
             if file.endswith(e):
+                f = PATH+e+"/"+file; #TODO
                 try:
-                    os.rename(file,PATH+e+"\\"+file)
+                    os.rename(file,PATH+e+"/"+file)
                 except FileNotFoundError as err:
                     print("--Error: Have you created folders first? Choose 3 in menu");
                     print("--Message: ",err);
@@ -249,7 +249,7 @@ def moveFiles():
                 print("Moved ", end="")
                 print(file, end="")
                 print(" to ", end="")
-                print(file,PATH+e+"\\"+file)
+                print(file,PATH+e+"/"+file)
                 counter=counter+1
     if (counter == 0):
         print ("No valid files to sort");
@@ -263,8 +263,8 @@ def moveFilesBack():
     li = os.listdir()
     counter = 0
     for e in EXTENSIONS:
-        li = os.listdir(PATH+"\\"+e);
-        print(li) #DEBUG
+        li = os.listdir(PATH+"/"+e);
+        print(PATH+"/"+e) #DEBUG
         for file in li:
             try:
                 os.rename(PATH+file,file);
@@ -276,8 +276,9 @@ def moveFilesBack():
             print("Moved ", end="")
             print(file, end="")
             print(" to ", end="")
-            print(file,PATH+e+"\\"+file)
+            print(file,PATH+e+"/"+file)
             counter=counter+1
+    print ("Done")
         
 
 def quitting():
@@ -315,7 +316,7 @@ if __name__ == "__main__":
     #DOWNLOADPATH = loadConfig('config.ini');
     #makeDirs();
     #moveFiles()
-
+    
 
 
 
