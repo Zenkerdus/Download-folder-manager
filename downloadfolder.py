@@ -4,7 +4,9 @@
 
 #TODO:
 #detect extensions and create folders
-#folder sorting
+#folder moving?
+#Function/class for handling exceptions?
+#Continue moving other files even if error instead of return?
 
 #Test:
 #If file is PNG instead of png? Unneccessary?
@@ -29,17 +31,13 @@ E_VIDEOS = ["mp4","flv"]
 E_COMPRESSED = ["rar","7z","rar","zip"]
 E_SOFTWARE = ["apk","exe","nds","gba","msi"]
 
-
 PATH = "#sortedDownloads/"
-
-
 
 def startMessage():
     print ("----------------------------")
     print ("-  Downloadfolder manager  -")
     print ("----------------------------")
     return
-
 
 def loadConfig(file):
     """Load config file with path"""
@@ -118,6 +116,7 @@ def menu():
     print(c)
 
 def removeJunkFiles():
+    """Removes files with extensions from E_REMOVE"""
     li = os.listdir()
     global E_REMOVE
     for e in E_REMOVE:
@@ -126,7 +125,7 @@ def removeJunkFiles():
                 os.remove(file);
                 print(file);
 
-    print("Done")
+    
     return
 
 def listFileSizes():
@@ -196,20 +195,6 @@ def makeDirs():
             print (e, " created");
     os.chdir(os.pardir)
 
-def detectFileTypes():
-    """Return how many known filetypes in folder in list"""
-    """extensions = ["rar","zip","mkv","mp3", "7z", "jpg", "png", "odt", "exe", "pdf"]
-    li = os.listdir();
-    found=[];
-    for file in li:
-        for t in extensions:
-            if file.endswith("."+t):
-                found.append(t);
-                li.pop(li.index(file));
-    print (found);
-    print (extensions)
-    print (li);"""
-    pass
 
 def moveFiles():
     """Move downloaded files to folders"""
@@ -243,8 +228,10 @@ def moveFiles():
                         print("Removed ", file)
                     elif ( c == "N" or c == "NO"):
                         continue
-                    
-
+                except PermissionError as e:
+                    print("--Error: File is being used!")
+                    print("--Message: ",e)
+                    return 1
                     
                 print("Moved ", end="")
                 print(file, end="")
@@ -254,23 +241,39 @@ def moveFiles():
     if (counter == 0):
         print ("No valid files to sort");
     else:
+        print ()
         print ("Moved ",counter," files")
 
 def moveFilesBack():
-    """Move files back from folders, moveFiles in reverse"""
+    """DEBUGGING - Move files back from folders, moveFiles in reverse"""
     global EXTENSIONS
     global PATH
     li = os.listdir()
     counter = 0
     for e in EXTENSIONS:
-        li = os.listdir(PATH+"/"+e);
-        print(PATH+"/"+e) #DEBUG
+        li = os.listdir( PATH + "/" + e);
+        #print("moveFilesBack: ",PATH + e) #DEBUG
         for file in li:
             try:
-                os.rename(PATH+file,file);
+                os.rename( PATH + e + "/" + file, file);
             except FileNotFoundError as e:
                 print("--Error:")
                 print("--Message: ",e);
+                return 1
+            except FileExistsError as err:
+                print("--Error: File already exists!")
+                print("--Message: ",err)
+                c = ""
+                c = input("Remove from sorted folder? (Y/N)")
+                c = c.upper()
+                if (c == "Y" or c == "YES"):
+                    os.remove( PATH + e + "/" + file)
+                    print("Removed ", file)
+                elif ( c == "N" or c == "NO"):
+                    continue
+            except PermissionError as e:
+                print("--Error: File is being used!")
+                print("--Message: ",e)
                 return 1
 
             print("Moved ", end="")
@@ -278,8 +281,19 @@ def moveFilesBack():
             print(" to ", end="")
             print(file,PATH+e+"/"+file)
             counter=counter+1
-    print ("Done")
+    if (counter == 0):
+        print ("No valid files to sort");
+    else:
+        print ()
+        print ("Moved ",counter," files")
         
+def countSortedFoldersFiles():
+    """DEBUGGING - counts number of files in sorted folders """
+    pass
+
+def detectExtensions():
+    """Detect possible file extensions in downloaded files"""
+    pass
 
 def quitting():
     print ("Quitting...")
