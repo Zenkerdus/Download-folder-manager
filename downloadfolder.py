@@ -18,11 +18,11 @@ import configparser
 import sys
 
 
-EXTENSIONS = ['7z', 'apk', 'docx', 'epub', 'exe', 'gba', 'jar', 'jpg', 'mkv',
+EXTENSIONS = ['7z', 'apk', 'bin','docx', 'epub', 'exe', 'gba', 'jar', 'jpg', 'mkv',
               'mp3', 'mp4', 'msi', 'nds', 'odt', 'pdf', 'png', 'rar', 'stl',
               'txt', 'wav', 'zip']
 
-E_REMOVE = ["nsf","sfk","obj","html"]
+E_REMOVE = ["nsf","sfk","obj","html","properties","php","svg","ini",]
 
 E_IMAGES = ["png", "jpg", "jpeg", "bmp","tif"]
 E_DOCS = ["docx", "odt", "pdf", "ods"]
@@ -40,7 +40,7 @@ def startMessage():
     return
 
 def loadConfig(file):
-    """Load config file with path"""
+    """Load config file and change to that directory"""
     config = configparser.ConfigParser();
     config.sections();
     config.read(file);
@@ -55,7 +55,7 @@ def loadConfig(file):
 
     try:
         os.chdir(downloadpath)
-        print ("Downloadfolder: ", downloadpath, end="/n/n")
+        print ("Downloadfolder: ", downloadpath, end="\n\n")
     except (FileNotFoundError):
         print("--Error: Path not found! Did you type it correctly in the config file?")
         return False;
@@ -178,7 +178,7 @@ def bConv(byte,mode=None):
     return
 
 def makeDirs():
-    """Creates dir 'sortedfolder' and filetype folders"""
+    """Creates dir 'sortedfolder' and filetype folders from EXTENSIONS"""
     global EXTENSIONS;
     global PATH;
     try:
@@ -291,19 +291,49 @@ def countSortedFoldersFiles():
     """DEBUGGING - counts number of files in sorted folders """
     pass
 
+def rmListDupes(li):
+    """Return list with dupes in list removed"""
+    li = list(set(li));
+    li.sort()
+    return li      
+        
 def detectExtensions():
-    """Detect possible file extensions in downloaded files"""
-    pass
+    """Return file extensions from downloaded files"""
+    global PATH
+    li = os.listdir();
+    found = []
+    
+    for file in li:
+        i = file.rfind(".")
+        l = len(file[i:])
+        if (i == -1): #Didn't find extension, skip file
+            continue
+        elif (l > 5 or l < 3 ): #Extension length limit
+            continue
+        found.append(file[i:])
 
+    return found
+
+def countFiletypes():
+    """Count occurence of filetypes in folder"""
+    global PATH
+    li = detectExtensions();
+    EXT = rmListDupes(li)
+    
+    for e in EXT:
+        for file in li:
+            if file == e:
+                print("Duplicate!")
+    
 def quitting():
     print ("Quitting...")
     sys.exit()
 
 def main():
     startMessage()
-    DOWNLOADPATH = loadConfig('config.ini');
+    validpath = loadConfig('config.ini');
 
-    if (DOWNLOADPATH == False):
+    if (validpath == False):
         quitting();
 
     while (True):
@@ -320,17 +350,10 @@ def main():
             removeJunkFiles();
         elif (c == 5): #DEBUG - move files back
             moveFilesBack()
+            
         elif (c == 0): #quit
             quitting()
         print ("  --------------");
 
 if __name__ == "__main__":
     main()
-    #DEBUG
-    #DOWNLOADPATH = loadConfig('config.ini');
-    #makeDirs();
-    #moveFiles()
-    
-
-
-
