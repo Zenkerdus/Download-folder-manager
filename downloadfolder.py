@@ -7,6 +7,7 @@
 #folder moving?
 #Function/class for handling exceptions?
 #Continue moving other files even if error instead of return?
+#Log errors to stderror
 
 #Test:
 #If file is PNG instead of png? Unneccessary?
@@ -251,7 +252,11 @@ def moveFilesBack():
     li = os.listdir()
     counter = 0
     for e in EXTENSIONS:
-        li = os.listdir( PATH + "/" + e);
+        try:
+            li = os.listdir( PATH + "/" + e);
+        except FileNotFoundError:
+            print("--Error: File/folder doesn't exist. Skipping")
+        
         #print("moveFilesBack: ",PATH + e) #DEBUG
         for file in li:
             try:
@@ -314,16 +319,18 @@ def detectExtensions():
 
     return found
 
-def countFiletypes():
+def countFileTypes():
     """Count occurence of filetypes in folder"""
     global PATH
     li = detectExtensions();
     EXT = rmListDupes(li)
-    
     for e in EXT:
+        counter = 0;
         for file in li:
             if file == e:
-                print("Duplicate!")
+                counter = counter + 1;
+                #index(e)
+        print(e, counter)
     
 def quitting():
     print ("Quitting...")
@@ -332,6 +339,7 @@ def quitting():
 def main():
     startMessage()
     validpath = loadConfig('config.ini');
+    countFileTypes();
 
     if (validpath == False):
         quitting();
