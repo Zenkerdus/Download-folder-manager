@@ -17,7 +17,7 @@ import glob
 import pdb #pdb.set_trace()
 import configparser
 import sys
-
+from collections import OrderedDict
 
 EXTENSIONS = ['7z', 'apk', 'bin','docx', 'epub', 'exe', 'gba', 'jar', 'jpg', 'mkv',
               'mp3', 'mp4', 'msi', 'nds', 'odt', 'pdf', 'png', 'rar', 'stl',
@@ -80,6 +80,7 @@ def menu():
         print ("3.Create folders");
         print ("4.Remove junk files");
         print ("5.DEBUG-Move files back");
+        print ("6.Count filetypes in downloadfolder")
         print ("Q/0 - Quit");
         print ("")
         c = input("Choice> ");
@@ -112,6 +113,14 @@ def menu():
             return 4
         elif (c == 5):
             return 5
+        elif (c == 6):
+            return 6
+        elif (c == 7):
+            return 7
+        elif (c == 8):
+            return 8
+        elif (c == 9):
+            return 9
         elif (c == 0):
             return 0
     print(c)
@@ -324,13 +333,24 @@ def countFileTypes():
     global PATH
     li = detectExtensions();
     EXT = rmListDupes(li)
+    sortedCounter = {}
+    counter = 0;
+    other = 0;
+    
     for e in EXT:
-        counter = 0;
         for file in li:
             if file == e:
                 counter = counter + 1;
                 #index(e)
-        print(e, counter)
+                
+        sortedCounter[e] = counter
+        #print(e, counter)
+    
+    sortedCounter = OrderedDict(sorted(sortedCounter.items(), key=lambda t: t[1]))
+    for filetype in sortedCounter:
+        print (filetype,"\t",sortedCounter[filetype])
+    print("")
+
     
 def quitting():
     print ("Quitting...")
@@ -339,7 +359,6 @@ def quitting():
 def main():
     startMessage()
     validpath = loadConfig('config.ini');
-    countFileTypes();
 
     if (validpath == False):
         quitting();
@@ -358,6 +377,8 @@ def main():
             removeJunkFiles();
         elif (c == 5): #DEBUG - move files back
             moveFilesBack()
+        elif (c == 6): #show number of filetypes
+            countFileTypes()
             
         elif (c == 0): #quit
             quitting()
