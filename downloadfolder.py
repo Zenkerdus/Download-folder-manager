@@ -13,6 +13,7 @@
 #If file is PNG instead of png? Unneccessary?
 
 import os
+import shutil
 import glob
 import pdb #pdb.set_trace()
 import configparser
@@ -169,7 +170,10 @@ def listFiles():
     li = os.listdir()
     x = "";
     for x in li:
-        print(x);
+        if os.path.isfile(x) == False:
+            print(x, " -- (Folder)")
+        else:
+            print(x)
     return
 
 def bConv(byte,mode=None):
