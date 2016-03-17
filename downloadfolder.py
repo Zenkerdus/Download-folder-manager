@@ -18,6 +18,8 @@ import glob
 import pdb #pdb.set_trace()
 import configparser
 import sys
+import locale
+import gettext
 from collections import OrderedDict
 
 EXTENSIONS = ['7z', 'apk', 'bin','docx', 'epub', 'exe', 'gba', 'jar', 'jpg', 'mkv',
@@ -63,7 +65,11 @@ def loadConfig(file):
         print("--Error: Path not found! Did you type it correctly in the config file?")
         return False;
     return True;
-        
+
+def init_localization():
+    locale.setlocale(locale.LC_ALL, '');
+    
+
 def toptensize():
     """Show a list of top ten biggest files"""
     pass;
@@ -397,6 +403,7 @@ def quitting():
     sys.exit()
 
 def main():
+    init_localization()
     startMessage()
     validpath = loadConfig('config.ini');
 
