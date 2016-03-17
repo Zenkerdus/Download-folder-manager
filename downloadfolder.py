@@ -42,7 +42,9 @@ def startMessage():
     return
 
 def loadConfig(file):
-    """Load config file and change to that directory"""
+    """Load config file and change to that directory. Must be done before
+    anything else
+    """
     config = configparser.ConfigParser();
     config.sections();
     config.read(file);
@@ -51,8 +53,7 @@ def loadConfig(file):
         downloadpath = config['common']['DOWNLOADPATH']
     except KeyError as e:
         print ("--Error: Couldn't read path. Corrupt ini file?");
-        print ("--E:",end="")
-        print (e);
+        print ("--E:", e)
         return False
 
     try:
@@ -135,8 +136,6 @@ def removeJunkFiles():
             if file.endswith(e):
                 os.remove(file);
                 print(file);
-
-    
     return
 
 def listFileSizes():
@@ -207,13 +206,52 @@ def makeDirs():
             print (e + " exists")
         else:
             print (e, " created");
+    print ()
+    print ("Done")
+    
     os.chdir(os.pardir)
 
+def pathFolderExists(mode=None):
+    """Check if global PATH folder exists"""
+    global PATH
+    li = os.listdir()
 
+    if (mode == None):
+        try:
+            os.listdir(PATH)
+        except FileNotFoundError as err:
+            print("-- Error: ", PATH , " doesn't exist.")
+            print("Restart the program to make one.")
+            print("Err: ", err)
+            print()
+            return False
+        return True
+
+    #For first time run at beginning of program"""
+    elif (mode == "intro"):
+        try:
+            os.listdir(PATH)
+        except FileNotFoundError as err:
+            print("Your downloadfolder doesn't have an ", PATH, " folder yet.")
+            print("It is needed to sort folders.")
+            print("Do you want me to create it?")
+            a = input("(Y/N): ")
+            a = a.upper()
+            if (a == "Y" or a == "YES"):
+                makeDirs()
+            else:
+                print(PATH, " not created")
+                print()
+                return False
+
+            return True
+        
 def moveFiles():
     """Move downloaded files to folders"""
     global EXTENSIONS
     global PATH;
+
+    pathFolderExists();
     li = os.listdir()
     counter = 0;
     for file in li:
@@ -236,7 +274,7 @@ def moveFiles():
                     print("--Message: ",err)
                     c = ""
                     c = input("Remove? (Y/N)")
-                    c = c.upper()
+                    c = c.upper() 
                     if (c == "Y" or c == "YES"):
                         os.remove(file)
                         print("Removed ", file)
@@ -262,6 +300,7 @@ def moveFilesBack():
     """DEBUGGING - Move files back from folders, moveFiles in reverse"""
     global EXTENSIONS
     global PATH
+    pathFolderExists()
     li = os.listdir()
     counter = 0
     for e in EXTENSIONS:
@@ -270,10 +309,11 @@ def moveFilesBack():
         except FileNotFoundError:
             print("--Error: File/folder doesn't exist. Skipping")
         
-        #print("moveFilesBack: ",PATH + e) #DEBUG
+        print("moveFilesBack: ",PATH + e) #DEBUG
         for file in li:
             try:
-                os.rename( PATH + e + "/" + file, file);
+                #move file
+                os.rename( PATH + e + "/" + file, file); 
             except FileNotFoundError as e:
                 print("--Error:")
                 print("--Message: ",e);
@@ -304,10 +344,6 @@ def moveFilesBack():
     else:
         print ()
         print ("Moved ",counter," files")
-        
-def countSortedFoldersFiles():
-    """DEBUGGING - counts number of files in sorted folders """
-    pass
 
 def rmListDupes(li):
     """Return list with dupes in list removed"""
@@ -363,6 +399,8 @@ def quitting():
 def main():
     startMessage()
     validpath = loadConfig('config.ini');
+
+    pathFolderExists("intro")
 
     if (validpath == False):
         quitting();
