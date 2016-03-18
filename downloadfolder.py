@@ -407,10 +407,10 @@ def main():
     startMessage()
     validpath = loadConfig('config.ini');
 
-    pathFolderExists("intro")
-
     if (validpath == False):
         quitting();
+
+    pathFolderExists("intro")
 
     while (True):
         c = menu();
