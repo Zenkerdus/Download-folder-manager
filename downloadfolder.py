@@ -47,14 +47,22 @@ def loadConfig(file):
     """Load config file and change to that directory. Must be done before
     anything else
     """
+
+    if (os.path.isfile(file) == False):
+        print ("--Error: config.ini doesn't exist!")
+        print ("Creating config.ini with default settings.")
+        createConfig();
+        print ("Please change downloadpath manually in config.ini!\n")
+        return False
+
     config = configparser.ConfigParser();
     config.sections();
     config.read(file);
-
+    
     try:
         downloadpath = config['common']['DOWNLOADPATH']
     except KeyError as e:
-        print ("--Error: Couldn't read path. Corrupt ini file?");
+        print ("--Error: Couldn't read path in file. Corrupt ini file?");
         print ("--E:", e)
         return False
 
@@ -62,7 +70,8 @@ def loadConfig(file):
         os.chdir(downloadpath)
         print ("Downloadfolder: ", downloadpath, end="\n\n")
     except (FileNotFoundError):
-        print("--Error: Path not found! Did you type it correctly in the config file?")
+        print("--Error: Folder \"", downloadpath, "\" not found!")
+        print ("Is the path correct in the config file?")
         return False;
     return True;
 
@@ -397,7 +406,12 @@ def countFileTypes():
         print (filetype,"\t",sortedCounter[filetype])
     print("")
 
-    
+def createConfig():
+    f = open('config.ini','w')
+    f.write("[common]\n")
+    f.write("DOWNLOADPATH=C:/Users/YOURUSERNAME/Downloads")
+    f.close()
+
 def quitting():
     print ("Quitting...")
     sys.exit()
