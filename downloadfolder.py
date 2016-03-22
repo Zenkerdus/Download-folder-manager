@@ -20,7 +20,7 @@ import gettext
 from collections import OrderedDict
 
 EXTENSIONS = ['7z', 'apk', 'bin','docx', 'epub', 'exe', 'gba', 'jar', 'jpg', 'mkv',
-              'mp3', 'mp4', 'msi', 'nds', 'odt', 'ods' 'pdf', 'png', 'rar', 'stl',
+              'mp3', 'mp4', 'msi', 'nds', 'odt', 'ods', 'pdf', 'png', 'rar', 'stl',
               'txt', 'wav', 'zip']
 
 E_REMOVE = ["nsf","sfk","obj","html","properties","php","svg","ini",]
