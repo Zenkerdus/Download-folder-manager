@@ -9,9 +9,6 @@
 #Continue moving other files even if error instead of return?
 #Log errors to stderror
 
-#Test:
-#If file is PNG instead of png? Unneccessary?
-
 import os
 import shutil
 import glob
@@ -23,7 +20,7 @@ import gettext
 from collections import OrderedDict
 
 EXTENSIONS = ['7z', 'apk', 'bin','docx', 'epub', 'exe', 'gba', 'jar', 'jpg', 'mkv',
-              'mp3', 'mp4', 'msi', 'nds', 'odt', 'pdf', 'png', 'rar', 'stl',
+              'mp3', 'mp4', 'msi', 'nds', 'odt', 'ods' 'pdf', 'png', 'rar', 'stl',
               'txt', 'wav', 'zip']
 
 E_REMOVE = ["nsf","sfk","obj","html","properties","php","svg","ini",]
@@ -269,17 +266,16 @@ def moveFiles():
     pathFolderExists();
     li = os.listdir()
     counter = 0;
+    
     for file in li:
         for e in EXTENSIONS:
-
             #if e == "images"
             #for img in IMAGEFORMATS 
 
-            
-            if file.endswith(e):
-                f = PATH+e+"/"+file; #TODO
+            if file.lower().endswith(e):
+                filepath = PATH+e+"/"+file; #TODO
                 try:
-                    os.rename(file,PATH+e+"/"+file)
+                    os.rename(file,filepath)
                 except FileNotFoundError as err:
                     print("--Error: Have you created folders first? Choose 3 in menu");
                     print("--Message: ",err);
@@ -303,7 +299,7 @@ def moveFiles():
                 print("Moved ", end="")
                 print(file, end="")
                 print(" to ", end="")
-                print(file,PATH+e+"/"+file)
+                print(file,filepath)
                 counter=counter+1
     if (counter == 0):
         print ("No valid files to sort");
