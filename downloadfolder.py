@@ -176,6 +176,7 @@ def listFileSizes():
 
 def listFiles():
     """List files"""
+    print ("shit");
     print ("  ---Filelist---");
     print ("  --------------");
     li = os.listdir()
@@ -384,7 +385,7 @@ def countFileTypes():
     global PATH
     li = detectExtensions();
     EXT = rmListDupes(li)
-    sortedCounter = {}
+    sortedCounter = {} #Dictionary supports string indices
     counter = 0;
     other = 0;
     
@@ -396,7 +397,7 @@ def countFileTypes():
                 
         sortedCounter[e] = counter
         #print(e, counter)
-    
+    print (sortedCounter)
     sortedCounter = OrderedDict(sorted(sortedCounter.items(), key=lambda t: t[1]))
     for filetype in sortedCounter:
         print (filetype,"\t",sortedCounter[filetype])
@@ -414,6 +415,9 @@ def quitting():
 
 def main():
     init_localization()
+    if os.name == 'nt':
+        print("Using NT, changing code page...");
+        os.system("chcp 65001");
     startMessage()
     validpath = loadConfig('config.ini');
 
