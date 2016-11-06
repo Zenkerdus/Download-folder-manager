@@ -23,7 +23,7 @@ EXTENSIONS = ['7z', 'apk', 'bin','docx', 'epub', 'exe', 'gba', 'jar', 'jpg', 'mk
               'mp3', 'mp4', 'msi', 'nds', 'odt', 'ods', 'pdf', 'png', 'rar', 'stl',
               'txt', 'wav', 'zip']
 
-E_REMOVE = ["nsf","sfk","obj","html","properties","php","svg","ini",]
+E_REMOVE = ["nsf","sfk","obj","html","properties","php","svg","ini","torrent"]
 
 E_IMAGES = ["png", "jpg", "jpeg", "bmp","tif"]
 E_DOCS = ["docx", "odt", "pdf", "ods"]
