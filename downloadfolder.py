@@ -404,9 +404,10 @@ def countFileTypes():
     print("")
 
 def createConfig():
+    username = os.getlogin()
     f = open('config.ini','w')
     f.write("[common]\n")
-    f.write("DOWNLOADPATH=C:/Users/YOURUSERNAME/Downloads")
+    f.write("DOWNLOADPATH=C:/Users/"+username+"/Downloads")
     f.close()
 
 def quitting():
